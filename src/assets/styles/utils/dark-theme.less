@@ -1,0 +1,117 @@
+.dark {
+
+	& .background {
+		background: #30324b;
+	}
+
+	& .todo {
+
+		&__create {
+			background: #25273c;
+		}
+
+		&__head {
+			background: url("/assets/img/bg-desktop-dark.jpg");
+			background-repeat: no-repeat;
+			background-size: cover;
+			background-position: left center;
+			box-shadow: 0px 4px 8px 0px rgba(203, 212, 219, 0.2);
+		}
+
+		&__false-check {
+			border: 1px solid rgba(#CACDE8, 0.5);
+			background: #25273c;
+
+			&:hover {
+				background: linear-gradient(135deg, #57ddff,#c058f3);
+
+				&:before {
+					background: #25273c;
+				}
+			}
+		}
+
+		&__check {
+
+			&:checked {
+				& ~ .todo__false-check {
+					background: linear-gradient(135deg, #57ddff, #c058f3);
+
+					&:before {background: transparent}
+				}
+
+				& ~ .todo__false-check > svg {
+					display: block;
+				}
+
+				& ~ .todo__text {
+					color: #525463;
+					text-decoration: line-through;
+				}
+			}
+		}
+
+		&__content {
+			background: #25273c;
+		}
+
+		&__text {
+			color: #cacde8;
+		}
+
+		&__link {
+			color: #cacde8
+		}
+
+		&__item {
+			border-bottom: 1px solid #37394E;
+
+			&.active {
+				& ~ .todo__false-check {
+					background: linear-gradient(135deg, #57ddff, #c058f3);
+
+					&:before {background: transparent}
+				}
+
+				& ~ .todo__false-check > svg {
+					display: block;
+				}
+
+				& ~ .todo__text {
+					color: #525463;
+					text-decoration: line-through;
+				}
+			}
+		}
+
+		&__control {
+			color: #525463;
+
+		}
+
+		&__control-false {
+			background: #25273c;
+			color: #525463;
+		}
+
+		&__foot {
+			color: #525463;
+		}
+
+		&__input {
+			color: #D2D1D6;
+		}
+	}
+
+	& .btn {
+		color: #525463;
+
+		&:hover {
+			color: #CCCFE2;
+		}
+
+		&.active {
+			color: #4F74CD;
+		}
+	}
+}
