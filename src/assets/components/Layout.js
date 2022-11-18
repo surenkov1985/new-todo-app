@@ -1,15 +1,15 @@
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { Header } from "./Header";
-import { Context } from "../..";
+import { useSelector } from "react-redux";
 
 export const Layout = () => {
-	const { auth } = useContext(Context);
+	const { app, auth } = useSelector((state) => state.firebase);
 	const navigate = useNavigate();
 
 	const [user] = useAuthState(auth);
-	console.log(user, auth);
+	// console.log(user, auth);
 
 	useEffect(() => {
 		if (user) {

@@ -2,10 +2,9 @@ import React from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { Layout } from "./Layout";
 import { LoginPage } from "../pages/LoginPage";
-import { ContentPage } from "../pages/contentPage";
+import { ContentPage } from "../pages/ContentPage";
 
 export const App = () => {
-
 	return (
 		<BrowserRouter>
 			<Routes>

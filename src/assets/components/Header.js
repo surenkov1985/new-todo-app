@@ -1,15 +1,14 @@
-import React, { useContext } from "react";
+import React from "react";
 import { themeToggle } from "../stores/themeReducer";
 import { BsMoonFill, BsSunFill } from "react-icons/bs";
-
 import Button from "./Button";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
-import { useSelector } from "react-redux";
-import { Context } from "../..";
+import { useDispatch, useSelector } from "react-redux";
 
 export const Header = () => {
 	const { theme } = useSelector((state) => state.theme);
-	const { auth } = useContext(Context);
+	const dispatch = useDispatch()
+	const { app, auth } = useSelector((state) => state.firebase);
 	const [signOut] = useSignOut(auth);
 	const [user] = useAuthState(auth);
 
@@ -17,7 +16,6 @@ export const Header = () => {
 		document.body.classList.toggle("dark");
 		dispatch(themeToggle());
 	}
-
 
 	return (
 		<div className="todo__head">

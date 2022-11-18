@@ -129,11 +129,14 @@ const dev = {
 	devtool: "source-map",
 	devServer: {
 		historyApiFallback: true,
+		devMiddleware: {
+			writeToDisk: true,
+		},
 		static: {
 			directory: path.join(__dirname, "src"),
 		},
 		open: true,
-		port: 3000,
+		port: 5000,
 		host: "localhost",
 		compress: false,
 		hot: true,
