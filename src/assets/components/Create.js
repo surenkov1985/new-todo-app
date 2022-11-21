@@ -5,7 +5,7 @@ import { cardDataUpdate } from "../stores/firebaseReducer";
 import { useForm } from "react-hook-form";
 // import {inputText} from "../stores/actions";
 
-export default function Create() {
+export default function Create({ modalOpen }) {
 	const [isCreateCard, setIsCreateCard] = useState(false);
 	const dispatch = useDispatch();
 	const { cardData } = useSelector((state) => state.firebase);
@@ -42,13 +42,13 @@ export default function Create() {
 	return (
 		<form className="todo__create-form" onSubmit={handleSubmit(formSubmit)}>
 			<div className="todo__create-container">
-				
 				{!isCreateCard ? (
 					<div
 						className="todo__form-btn"
 						onClick={() => {
-							setIsCreateCard(true);
-							setVal("");
+							// setIsCreateCard(true);
+							// setVal("");
+							modalOpen();
 						}}
 					>
 						<span>

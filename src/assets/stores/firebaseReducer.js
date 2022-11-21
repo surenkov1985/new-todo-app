@@ -23,5 +23,5 @@ export const firebaseSlice = createSlice({
 	},
 });
 
-export const { cardDataUpdate } = firebaseSlice.actions;
+export const { cardDataUpdate, setCards } = firebaseSlice.actions;
 export default firebaseSlice.reducer;
