@@ -5,11 +5,13 @@
 	display: flex;
 	justify-content: center;
 	flex-wrap: wrap;
+	overflow-y: hidden;
 
 	&__main {
 		width: 100%;
 		height: 100%;
 		display: flex;
+		align-items: flex-start;
 		column-gap: 30px;
 		padding: 25px;
 	}
@@ -78,18 +80,33 @@
 		}
 	}
 
+	&__title {
+		font-size: 24px;
+		font-weight: 600;
+	}
+
 	&__create {
 		width: 300px;
 		display: flex;
+		// max-height: 90%;
+		height: 100%;
 		flex-direction: column;
 		row-gap: 10px;
 		border-radius: 5px;
-		background: #FFFFFF;
-		padding: 25px;
+		// background: #FFFFFF;
+		padding: 15px;
 
 		@media (max-width: 500px) {
 			padding: 15px;
 		}
+	}
+
+	&__list {
+		width: 100%;
+		display: flex;
+		flex-direction: column;
+		row-gap: 10px;
+		overflow-y: auto;
 	}
 
 	&__create-form {
@@ -117,8 +134,9 @@
 	&__create-container {
 		width: 100%;
 		height: 100%;
-		grid-template-columns: 25px auto;
-		align-items: center;
+		display: flex;
+		column-gap: 10px;
+		// align-items: center;
 		position: relative;
 
 		&:hover > .todo__delete-btn {

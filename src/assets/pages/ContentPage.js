@@ -45,10 +45,8 @@ export const ContentPage = () => {
 	};
 
 	const closeModal = () => {
-
-			setModalActive(false);
-			setObj(null);
-		
+		setModalActive(false);
+		setObj(null);
 	};
 	const modalOpen = () => {
 		setModalActive(true);
@@ -58,41 +56,46 @@ export const ContentPage = () => {
 	return (
 		<div className="todo__main">
 			<div className="todo__create">
-				<h2>Задачи</h2>
-				{snapshots &&
-					snapshots.map((item) => {
-						console.log(item.val());
-						return (
-							<article
-								className="todo__card card"
-								key={item.key}
-								onClick={() => {
-									console.log(item.val());
-									setObj(item);
-									modalOpen();
-								}}
-							>
-								<h2 className="card__title">{item.val().title}</h2>
-								<div className="card__file"></div>
-								<div className="card__description">
-									<p>{item.val().description}</p>
-								</div>
-								<div>
-									<img src={item.val().file} />
-								</div>
-								<button className="card__delete">
-									<TiDelete
-										color="#ff0000"
-										size={20}
-										onClick={(e) => {
-											deleteCard(e, item);
-										}}
-									/>
-								</button>
-							</article>
-						);
-					})}
+				<h2 className="todo__title">Задачи</h2>
+				<div className="todo__list">
+					{snapshots &&
+						snapshots.map((item) => {
+							console.log(item.val());
+							return (
+								<article
+									className="todo__card card"
+									key={item.key}
+									onClick={() => {
+										console.log(item.val());
+										setObj(item);
+										modalOpen();
+									}}
+								>
+									<h2 className="card__title">{item.val().title}</h2>
+									<div className="card__file"></div>
+									<div className="card__description">
+										<p>{item.val().description}</p>
+									</div>
+									<div>
+										<img src={item.val().file} />
+									</div>
+									<button className="card__delete">
+										<TiDelete
+											color="#ff0000"
+											size={20}
+											onClick={(e) => {
+												deleteCard(e, item);
+											}}
+										/>
+									</button>
+								</article>
+							);
+						})}
+				</div>
 				<Create modalOpen={modalOpen} />
+			</div>
+			<div className="todo__create">
+				<button className="todo__form-btn">Добавить колонку</button>
 			</div>
 			{modalActive && <AddCard obj={obj} closeModal={closeModal} />}
 			{/* <button onClick={setCard}>ok</button> */}
