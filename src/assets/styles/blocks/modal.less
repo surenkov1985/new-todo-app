@@ -11,7 +11,7 @@
 
 
     &__container {
-        padding: 25px;
+        padding: 40px 25px 30px;
         width: 100%;
         max-height: 90%;
         overflow-y: auto;
@@ -21,9 +21,18 @@
         position: relative;
     }
 
+    &__form-container {
+        width: 100%;
+        height: 100%;
+    }
+
     &__title {
         font-size: 24px;
         font-weight: 600;
+    }
+
+    &__text {
+        word-break: break-all;
     }
 
     &__label-title {
@@ -74,11 +83,14 @@
     
     &__input {
         border: 1px solid #000;
+        border-radius: 5px;
+        padding: 5px;
+        width: 100%;
+        font-size: 14px;
     }
 
     &__btn {
-        // width: 100%;
-		padding: 10px;
+		padding: 10px 15px;
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -97,4 +109,35 @@
         column-gap: 10px;
         display: flex;
     }
+
+    &__list {
+        display: flex;
+        flex-direction: column;
+        row-gap: 10px;
+    }
+
+    &__delete-btn {
+		position: absolute;
+		right: -10px;
+		width: 50px;
+		height: 50px;
+		cursor: pointer;
+		display: none;
+		transition: all 0.1s;
+
+		& > svg {
+			z-index: -1;
+
+			@media (max-width: 460px) {
+				transform: scale(0.7);
+			}
+		}
+
+		&:hover {
+			& > svg path {
+				transition: all 0.1s;
+				fill: #CCCFE2;
+			}
+		}
+	}
 }

@@ -2,15 +2,20 @@
     width: 100%;
     border: 1px solid #000;
     border-radius: 5px;
-    padding: 10px;
+    padding: 15px 10px 20px;
     position: relative;
     display: flex;
     flex-direction: column;
-    row-gap: 5px;
+    row-gap: 15px;
     cursor: pointer;
 
     &:hover {
         opacity: 0.6;
+    }
+
+    &__title {
+        font-size: 18px;
+        font-weight: 600;
     }
 
     &__delete {
@@ -29,5 +34,9 @@
         }
     }
 
-    
+    &__icons {
+        display: flex;
+        align-items: center;
+        column-gap: 5px;
+    }
 }

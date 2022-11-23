@@ -6,6 +6,7 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { useSelector } from "react-redux";
 import { useList } from "react-firebase-hooks/database";
 import { AddCard } from "../components/AddCard";
+import {BsUiChecks} from "react-icons/bs"
 
 export const ContentPage = () => {
 	const { app, auth, cardData } = useSelector((state) => state.firebase);
@@ -40,7 +41,6 @@ export const ContentPage = () => {
 	const deleteCard = (e, obj) => {
 		e.preventDefault();
 		e.stopPropagation();
-		console.log(obj.key);
 		remove(ref(database, "todos/" + obj.key));
 	};
 
@@ -52,7 +52,6 @@ export const ContentPage = () => {
 		setModalActive(true);
 	};
 
-	console.log(snapshots, 111);
 	return (
 		<div className="todo__main">
 			<div className="todo__create">
@@ -60,7 +59,6 @@ export const ContentPage = () => {
 				<div className="todo__list">
 					{snapshots &&
 						snapshots.map((item) => {
-							console.log(item.val());
 							return (
 								<article
 									className="todo__card card"
@@ -72,13 +70,13 @@ export const ContentPage = () => {
 									}}
 								>
 									<h2 className="card__title">{item.val().title}</h2>
-									<div className="card__file"></div>
 									<div className="card__description">
-										<p>{item.val().description}</p>
+										<p className="modal__text">{item.val().description}</p>
 									</div>
-									<div>
+									<div className="card__file">
 										<img src={item.val().file} />
 									</div>
+									<div className="card__icons">{item.val().list && <BsUiChecks/>}</div>
 									<button className="card__delete">
 										<TiDelete
 											color="#ff0000"

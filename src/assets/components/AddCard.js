@@ -1,266 +1,252 @@
 import React, { useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
-// import { cardDataUpdate } from "../stores/firebaseReducer";
 import { AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
-import { getDatabase, ref, push, set, update } from "firebase/database";
-import { createTodo } from "../stores/todoReduser";
-import { useFileReader } from "./hooks/fileReaderHook";
+import { getDatabase, ref, push, set, update, remove } from "firebase/database";
+import { useList } from "react-firebase-hooks/database";
+import uniqid from "uniqid";
+import { useSelector } from "react-redux";
+import { TextInput } from "./TextItem";
+import { FileInput } from "./FileItem";
 
 export const AddCard = ({ obj, closeModal }) => {
-	const { app, auth, cardData } = useSelector((state) => state.firebase);
-	const { todoData } = useSelector((state) => state.todo);
+	const { app } = useSelector((state) => state.firebase);
+
 	const database = getDatabase(app);
-	// const todosList = ref(database, "todos");
-	const { handleSubmit, register } = useForm();
-	const dispatch = useDispatch();
+	const todosList = ref(database, "todos");
+	const [snapshots] = useList(todosList);
+
 	const [isListName, setIsListName] = useState(false);
 	const [isListCreate, setIsListCreate] = useState(false);
 	const [checkList, setCheckList] = useState({});
 	const [checkListName, setCheckListName] = useState(obj?.val().checkList?.checkListName || "");
-	const [list, setList] = useState(obj?.val().list || []);
 	const [listVal, setListVal] = useState("");
 
-	const [isEdit, setIsEdit] = useState(false);
+	const [data, setData] = useState(snapshots.find((item) => item.key == obj.key));
+	const [pushData, setPushData] = useState(null);
 
-	const { newData, setDataFile } = useFileReader();
+	function dateTime() {
+		let date = new Date();
+		return date.getTime();
+	}
 
-	useEffect(() => {
-		if (list.length) {
-			// dispatch(createTodo({checkList: {...checkList, list: list}}))
-			update(ref(database, "todos/" + obj.key), {
-				...{ ...todoData, list: list },
-			}).then(() => {
-				// setIsEdit(false);
-				// closeModal();
-			});
-			// setIsEdit(true)
-		}
-	}, [list]);
+	const pushList = (value) => {
+		let pushData = { id: uniqid(), checked: false, completed: "", text: value };
+		const newTodoList = ref(database, `todos/${data.key}/list`);
+		const newList = push(newTodoList);
+		set(newList, {
+			...pushData,
+		});
+	};
 
-	useEffect(() => {
-		if (obj) {
-			let values = obj.val();
-			dispatch(createTodo(values));
-		}
-	}, []);
+	const checkedList = (e, id, checked) => {
+		update(ref(database, `todos/${data.key}/list/` + id), {
+			...{ checked: !checked },
+		});
+	};
 
-	useEffect(() => {
-		if (newData.file) {
-			dispatch(createTodo(newData));
-			setIsEdit(true);
-		}
-	}, [newData]);
+	const removeList = (id) => {
+		remove(ref(database, `todos/${data.key}/list/` + id));
+	};
 
-	useEffect(() => {
-		if (isEdit) {
-			if (!obj) {
-				console.log(333);
-
-				const todoList = ref(database, "todos");
-				const newTodo = push(todoList);
-				set(newTodo, {
-					...todoData,
-				}).then(() => {
-					setIsEdit(false);
-					closeModal();
-				});
-			} else {
-				console.log("udate");
-				update(ref(database, "todos/" + obj.key), {
-					...todoData,
-				}).then(() => {
-					setIsEdit(false);
-					closeModal();
-				});
-			}
-		}
-	}, [isEdit]);
-
-	const formSubmit = (data) => {
-		console.log(data);
-		if (data.file[0]) {
-			setDataFile(data);
+	const pushTodo = (name, value) => {
+		let pushData = {};
+		if (name === "file") {
+			const reader = new FileReader();
+			reader.readAsDataURL(value);
+			reader.onload = () => {
+				setPushData({ file: reader.result });
+			};
 		} else {
-			dispatch(createTodo(data));
-			setIsEdit(true);
+			pushData[name] = value ? value : "";
+			setPushData(pushData);
 		}
 	};
-	console.log(list);
 
-	const listFormSubmit = (data) => {
-		console.log(data);
-	};
+	useEffect(() => {
+		if (pushData) {
+			update(ref(database, "todos/" + data.key), {
+				...pushData,
+			}).then(() => {
+				setPushData(null);
+			});
+		}
+	}, [pushData]);
+
+	useEffect(() => {
+		if (snapshots.length) {
+			console.log("reffff", dateTime());
+			setData(snapshots.find((item) => item.key === obj?.key));
+		}
+	}, [snapshots]);
 
 	return (
 		<div className="modal">
 			<div className="modal__container">
-				<form className="modal__form" encType="multipart/form-data" onSubmit={handleSubmit(formSubmit)}>
-					<h2></h2>
-					<label className="modal__label">
-						<div className="modal__title-control">
-							<h2 className="modal__title">{obj?.val().title ? obj.val().title : "Название"}</h2>
-							{obj?.val().title && (
-								<button className="modal__title-btn">
-									<AiFillEdit color="#97969B" size={20} />
-								</button>
-							)}
-						</div>
-						{!obj?.val().title && (
-							<textarea className="modal__input" rows={2} placeholder="Добавьте название..." {...register("title")} />
-						)}
-					</label>
-					<label className="modal__label">
-						<div className="modal__title-control">
-							<h3 className="modal__label-title">Подробности</h3>
-							{obj?.val().description && (
-								<button className="modal__title-btn">
-									<AiFillEdit color="#97969B" size={20} />
-								</button>
-							)}
-						</div>
+				<div className="modal__form-container">
+					<div className="modal__form">
+						<TextInput title={data?.val().title} name="title" keyHandler={pushTodo} />
 
-						{!obj?.val().description ? (
-							<textarea className="modal__input" rows={5} placeholder="Добавьте описание..." {...register("description")} />
-						) : (
-							<p>{obj?.val().description}</p>
-						)}
-					</label>
+						<h3 className="modal__label-title">Подробности</h3>
+						<TextInput text={data?.val().description} name="description" keyHandler={pushTodo} />
 
-					{!obj?.val().file ? (
+						<h3 className="modal__label-title">Вложение</h3>
+
+						<FileInput value={data?.val().file} name="file" checkHandler={pushTodo} />
+
 						<label className="modal__label">
-							<span className="modal__label-title">Вложение</span>
-							<input type="file" className="modal__input" rows={2} placeholder="Добавьте файл" {...register("file")} />
-						</label>
-					) : (
-						<img src={obj.val().file} alt="" />
-					)}
+							{data?.val().checkListName ? (
+								<div className="modal__title-control">
+									<h3 className="modal__label-title">{data?.val()?.checkListName}</h3>
 
-					<label className="modal__label">
-						{obj?.val().checkListName ? (
-							<div className="modal__title-control">
-								<h3 className="modal__label-title">{obj?.val().checkListName}</h3>
-
-								<button
-									className="modal__title-btn"
-									onClick={(e) => {
-										e.preventDefault();
-									}}
-								>
-									<AiFillEdit color="#97969B" size={20} />
-								</button>
-								<button
-									className="modal__title-btn"
-									onClick={(e) => {
-										e.preventDefault();
-									}}
-								>
-									<AiOutlinePlus
-										color="#97969B"
-										size={20}
+									<button
+										className="modal__title-btn"
 										onClick={(e) => {
 											e.preventDefault();
-											setIsListCreate(true);
 										}}
-									/>
-								</button>
-							</div>
-						) : (
-							<button
-								className="modal__btn"
-								onClick={(e) => {
-									e.preventDefault();
-									setIsListName(!isListName);
-								}}
-							>
-								Добавить список дел
-							</button>
-						)}
-						{isListName && (
-							<label className="modal__label-checkname">
-								<input
-									type="text"
-									className="modal__input"
-									placeholder="Название спискa..."
-									{...register("checkListName", {
-										value: checkListName,
-										onChange: (e) => {
-											setCheckListName(e.target.value);
-										},
-									})}
-								/>
+									>
+										<AiFillEdit color="#97969B" size={20} />
+									</button>
+									<button
+										className="modal__title-btn"
+										onClick={(e) => {
+											e.preventDefault();
+										}}
+									>
+										<AiOutlinePlus
+											color="#97969B"
+											size={20}
+											onClick={(e) => {
+												e.preventDefault();
+												setIsListCreate(true);
+											}}
+										/>
+									</button>
+								</div>
+							) : (
 								<button
 									className="modal__btn"
 									onClick={(e) => {
 										e.preventDefault();
-										setIsListCreate(true);
-										setCheckList({ ...checkList, checkListName: checkListName });
+										setIsListName(!isListName);
 									}}
 								>
-									Добавить
+									Добавить список дел
 								</button>
-							</label>
-						)}
-						{isListCreate && (
-							<label className="todo__create-container">
-								<input
-									type="text"
-									className="todo__input"
-									placeholder="Добавить запись"
-									value={listVal}
-									onChange={(e) => {
-										setListVal(e.target.value);
-									}}
-									onKeyDown={(e) => {
-										if (e.key === "Enter") {
+							)}
+							{isListName && (
+								<label className="modal__label-checkname">
+									<input
+										type="text"
+										className="modal__input"
+										placeholder="Чек-лист"
+										defaultValue="Чек-лист"
+										autoFocus={true}
+										name="checkListName"
+										onKeyDown={(e) => {
+											if (e.key === "Enter") {
+												e.preventDefault();
+												pushTodo(e.target.name, e.target.value);
+												setIsListName(false);
+												setIsListCreate(true);
+											}
+										}}
+									/>
+									<button
+										className="modal__btn"
+										onClick={(e) => {
 											e.preventDefault();
-											setList([...list, listVal]);
+											setIsListCreate(true);
+											pushTodo(e.target.name, e.target.value);
+											setCheckList({ ...checkList, checkListName: checkListName });
+											setIsListName(false);
+											setIsListCreate(true);
+										}}
+									>
+										Добавить
+									</button>
+								</label>
+							)}
+							{isListCreate && (
+								<label className="todo__create-container">
+									<input
+										type="text"
+										className="todo__input"
+										placeholder="Добавить запись"
+										value={listVal}
+										onChange={(e) => {
+											setListVal(e.target.value);
+										}}
+										autoFocus={true}
+										onKeyDown={(e) => {
+											if (e.key === "Enter") {
+												e.preventDefault();
+												//
+												pushList(listVal);
+												setListVal("");
+											}
+										}}
+									/>
+									<button
+										className="modal__title-btn"
+										onClick={(e) => {
+											e.preventDefault();
+											pushList(listVal);
 											setListVal("");
-										}
-									}}
-								/>
-								<button
-									className="modal__title-btn"
-									onClick={(e) => {
-										e.preventDefault();
-										setList([...list, listVal]);
-										setListVal("");
-									}}
-								>
-									<AiOutlinePlus color="#97969B" size={20} />
-								</button>
-								<button
-									className="modal__title-btn"
-									onClick={(e) => {
-										e.preventDefault();
-										setIsListCreate(false);
-									}}
-								>
-									<GrClose color="#97969B" size={20} />
-								</button>
-							</label>
-						)}
-					</label>
-
-					{/* <div>
-						{obj?.val().list?.length &&
-							obj?.val().list?.map((item, index) => {
-								return <div key={index}>{item}</div>;
-							})}
-					</div> */}
-					<div>
-						{list.length &&
-							list.map((item, index) => {
-								return <div key={index}>{item}</div>;
-							})}
+										}}
+									>
+										<AiOutlinePlus color="#97969B" size={20} />
+									</button>
+									<button
+										className="modal__title-btn"
+										onClick={(e) => {
+											e.preventDefault();
+											setIsListCreate(false);
+										}}
+									>
+										<GrClose color="#97969B" size={20} />
+									</button>
+								</label>
+							)}
+						</label>
+						<div>
+							{data?.val().list &&
+								Object.entries(data?.val().list).map(([key, item]) => {
+									console.log(item.key);
+									return (
+										<div
+											className="modal__list"
+											key={key}
+										>
+											<label className="todo__create-container">
+												<input
+													type="checkbox"
+													className="todo__check"
+													checked={item.checked}
+													onChange={(e) => checkedList(e, key, item.checked)}
+												/>
+												<div className="todo__false-check">
+													<svg xmlns="http://www.w3.org/2000/svg" width="11" height="9">
+														<path fill="none" stroke="#FFF" strokeWidth="2" d="M1 4.304L3.696 7l6-6" />
+													</svg>
+												</div>
+												<div className="todo__text">{item.text}</div>
+												<button
+													className="modal__delete-btn"
+													onClick={(e) => {
+														removeList(key);
+													}}
+												>
+													<GrClose size={18} color="#ff0000" />
+												</button>
+											</label>
+										</div>
+									);
+								})}
+						</div>
 					</div>
-
-					<input className="modal__btn" type="submit" value={!obj ? "Добавить" : "Редактировать"} />
-				</form>
-				{/* {file && <img src={file} />} */}
+				</div>
 				<button className="modal__close" onClick={(e) => closeModal()}>
-					<GrClose size={20} />
+					<GrClose size={20} color="#ff0000" />
 				</button>
 			</div>
 		</div>

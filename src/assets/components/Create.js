@@ -18,7 +18,6 @@ export default function Create({ modalOpen }) {
 	// });
 	// const val = null;
 
-	console.log(cardData);
 
 	function onKeyPress(e) {
 		if (e.key === "Enter" && val) {
@@ -26,6 +25,7 @@ export default function Create({ modalOpen }) {
 			const data = {};
 			data[e.target.name] = val;
 			setValue(e.target.name, "");
+			setVal("");
 			return handleSubmit(formSubmit(data));
 		}
 	}
@@ -46,22 +46,22 @@ export default function Create({ modalOpen }) {
 					<div
 						className="todo__form-btn"
 						onClick={() => {
-							// setIsCreateCard(true);
-							// setVal("");
-							modalOpen();
+							setIsCreateCard(true);
+							setVal("");
+							// modalOpen();
 						}}
 					>
 						<span>
 							<HiPlus />
 						</span>
-						<span>Добавить карточку</span>
+						<span>Добавить задачу</span>
 					</div>
 				) : (
-					<label>
+					<label className="todo__create-label">
 						<textarea
 							autoFocus
 							className="todo__input"
-							placeholder="Добавить доску"
+							placeholder="Введите название"
 							rows="2"
 							name="title"
 							value={val}
@@ -72,13 +72,16 @@ export default function Create({ modalOpen }) {
 								},
 							})}
 							onKeyPress={(e) => onKeyPress(e)}
+							onBlur={() => {
+								// setIsCreateCard(false);
+							}}
 						/>
 						<button
 							className="todo__form-btn"
-							// onClick={(e) => {
-							// 	e.preventDefault()
-							// 	setIsCreateCard(false);
-							// }}
+							onClick={(e) => {
+								e.preventDefault()
+								setIsCreateCard(false);
+							}}
 						>
 							Создать
 						</button>
