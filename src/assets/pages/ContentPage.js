@@ -1,47 +1,58 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Create from "../components/Create";
-import { getDatabase, ref, set, onValue, push, query, remove } from "firebase/database";
-import { TiDelete } from "react-icons/ti";
-import { useAuthState } from "react-firebase-hooks/auth";
+import { getDatabase, ref, set, onValue, push, remove, update } from "firebase/database";
 import { useSelector } from "react-redux";
-import { useList } from "react-firebase-hooks/database";
 import { AddCard } from "../components/AddCard";
-import {BsUiChecks} from "react-icons/bs"
+import { TodoCard } from "../components/TodoCard";
+import { Context } from "../..";
 
 export const ContentPage = () => {
-	const { app, auth, cardData } = useSelector((state) => state.firebase);
-	const [user] = useAuthState(auth);
-	const [data, setData] = useState(null);
+	const { app } = useContext(Context);
 	const [obj, setObj] = useState(null);
 	const [modalActive, setModalActive] = useState(false);
+	const { dropItem } = useSelector((state) => state.todo);
 
 	const database = getDatabase(app);
-	const todosList = ref(database, "todos");
+	const todosList = ref(database);
 
-	const [snapshots, loading, error] = useList(todosList);
+	const [todos, setTodos] = useState();
+	const [states, setStates] = useState();
 
-	const setCard = (data) => {
+	useEffect(() => {
+		onValue(todosList, (snapshot) => {
+			setTodos(Object.entries(snapshot.val().todos));
+			setStates(Object.entries(snapshot.val().states));
+		});
+	}, []);
+
+	const setCard = (data, state) => {
+		const todosList = ref(database, "todos");
 		const newTodo = push(todosList);
 		set(newTodo, {
+			...{ ...data, state: state },
+		});
+	};
+
+	const dropHandler = (e, state) => {
+		e.preventDefault();
+
+		update(ref(database, "todos/" + dropItem.id), {
+			...{ state: state },
+		});
+	};
+
+	const setState = (data) => {
+		const statesList = ref(database, "states");
+		const newState = push(statesList);
+		set(newState, {
 			...data,
 		});
 	};
 
-	useEffect(() => {
-		if (cardData) {
-			setCard(cardData);
-		}
-	}, [cardData]);
-
-	useEffect(() => {
-		const todosBase = ref(database, "todos");
-		setData(query(todosBase));
-	}, []);
-
-	const deleteCard = (e, obj) => {
+	const deleteCard = (e, key) => {
 		e.preventDefault();
 		e.stopPropagation();
-		remove(ref(database, "todos/" + obj.key));
+		remove(ref(database, "todos/" + key));
 	};
 
 	const closeModal = () => {
@@ -52,84 +63,40 @@ export const ContentPage = () => {
 		setModalActive(true);
 	};
 
+	const cardClickHandler = (data) => {
+		setObj(data);
+		modalOpen();
+	};
+
 	return (
 		<div className="todo__main">
-			<div className="todo__create">
-				<h2 className="todo__title">Задачи</h2>
-				<div className="todo__list">
-					{snapshots &&
-						snapshots.map((item) => {
-							return (
-								<article
-									className="todo__card card"
-									key={item.key}
-									onClick={() => {
-										console.log(item.val());
-										setObj(item);
-										modalOpen();
-									}}
-								>
-									<h2 className="card__title">{item.val().title}</h2>
-									<div className="card__description">
-										<p className="modal__text">{item.val().description}</p>
-									</div>
-									<div className="card__file">
-										<img src={item.val().file} />
-									</div>
-									<div className="card__icons">{item.val().list && <BsUiChecks/>}</div>
-									<button className="card__delete">
-										<TiDelete
-											color="#ff0000"
-											size={20}
-											onClick={(e) => {
-												deleteCard(e, item);
-											}}
-										/>
-									</button>
-								</article>
-							);
-						})}
+			<div className="todo__container">
+				{states &&
+					states.map(([key, item]) => {
+						return (
+							<div className="todo__create" key={key}>
+								<h2 className="todo__title">{item.state}</h2>
+								<div className="todo__list" onDrop={(e) => dropHandler(e, item.state)} onDragOver={(e) => dropHandler(e, item.state)}>
+									{todos &&
+										todos
+											.filter(([key, obj]) => obj.state === item.state)
+											.map(([key, item], index) => {
+												console.log(index);
+												return (
+													<TodoCard data={item} key={key} id={key} cardClick={cardClickHandler} deleteCard={deleteCard} />
+												);
+											})}
+								</div>
+								<Create createHandler={setCard} createText="Добавить задачу" name="title" state={item.state} />
+							</div>
+						);
+					})}
+
+				<div className="todo__create">
+					<Create createHandler={setState} createText="Добавить колонку" name="state" />
 				</div>
-				<Create modalOpen={modalOpen} />
+				{modalActive && <AddCard obj={obj} closeModal={closeModal} states={states} />}
 			</div>
-			<div className="todo__create">
-				<button className="todo__form-btn">Добавить колонку</button>
-			</div>
-			{modalActive && <AddCard obj={obj} closeModal={closeModal} />}
-			{/* <button onClick={setCard}>ok</button> */}
-			{/* <div className="todo__foot">Drag and drop to reorder list</div> */}
 		</div>
 	);
 };
-
-{
-	/* <div className="todo__content"> */
-}
-// 							{/* <TodoList classList="todo__item" data={data} category={category} onCheck={onItemCheck} deleteItem={deleteItem} /> */}
-// 							<div className="todo__control">
-// 								{/* <div className="todo__numb">{numbItems} items left</div> */}
-// 								<div className="todo__sort">
-// 									<Button classList={["todo__sort-all", "btn", onAllCategory]} text="All" onClick={setDataAll} />
-// 									<Button classList={["todo__sort-active", "btn", onActiveCategory]} text="Active" onClick={setDataActive} />
-// 									<Button
-// 										classList={["todo__sort-completed", "btn", onCompletedCategory]}
-// 										text="Completed"
-// 										onClick={setDataCompleted}
-// 									/>
-// 								</div>
-// 								<div className="todo__clear">
-// 									<Button classList={["todo__clear-btn", "btn"]} text="Clear completed" onClick={clearCompletedItems} />
-// 								</div>
-// 							</div>
-// 						</div>
-// 						<div className="todo__control-false">
-// 							<div className="todo__sort-false">
-// 								<Button classList={["todo__sort-all", "btn", onAllCategory]} text="All" onClick={setDataAll} />
-// 								<Button classList={["todo__sort-active", "btn", onActiveCategory]} text="Active" onClick={setDataActive} />
-// 								<Button
-// 									classList={["todo__sort-completed", "btn", onCompletedCategory]}
-// 									text="Completed"
-// 									onClick={setDataCompleted}
-// 								/>
-// 							</div>
-// 						</div>

@@ -1,22 +1,11 @@
 import React, { useState } from "react";
-import { useSelector, useDispatch } from "react-redux";
 import { HiPlus } from "react-icons/hi";
-import { cardDataUpdate } from "../stores/firebaseReducer";
 import { useForm } from "react-hook-form";
-// import {inputText} from "../stores/actions";
 
-export default function Create({ modalOpen }) {
+export default function Create({ createText, createHandler, name, state }) {
 	const [isCreateCard, setIsCreateCard] = useState(false);
-	const dispatch = useDispatch();
-	const { cardData } = useSelector((state) => state.firebase);
 	const [val, setVal] = useState("");
 	const { handleSubmit, register, setValue } = useForm({ mode: "all" });
-	// const val = useSelector(state => {
-	// 	const { createItemReducer } = state;
-
-	// 	return createItemReducer.text;
-	// });
-	// const val = null;
 
 
 	function onKeyPress(e) {
@@ -32,12 +21,8 @@ export default function Create({ modalOpen }) {
 	const formSubmit = (data) => {
 		setIsCreateCard(false);
 		setVal("");
-		dispatch(cardDataUpdate(data));
+		createHandler(data, state)
 	};
-
-	function onHandler(e) {
-		dispatch(cardDataUpdate());
-	}
 
 	return (
 		<form className="todo__create-form" onSubmit={handleSubmit(formSubmit)}>
@@ -48,13 +33,12 @@ export default function Create({ modalOpen }) {
 						onClick={() => {
 							setIsCreateCard(true);
 							setVal("");
-							// modalOpen();
 						}}
 					>
 						<span>
 							<HiPlus />
 						</span>
-						<span>Добавить задачу</span>
+						<span>{createText}</span>
 					</div>
 				) : (
 					<label className="todo__create-label">
@@ -65,16 +49,13 @@ export default function Create({ modalOpen }) {
 							rows="2"
 							name="title"
 							value={val}
-							{...register("title", {
+							{...register(name, {
 								defaultValue: val,
 								onChange: (e) => {
 									setVal(e.target.value);
 								},
 							})}
 							onKeyPress={(e) => onKeyPress(e)}
-							onBlur={() => {
-								// setIsCreateCard(false);
-							}}
 						/>
 						<button
 							className="todo__form-btn"

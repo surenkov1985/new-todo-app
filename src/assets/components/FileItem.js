@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { FileElem } from "./FileElem";
 
-export const FileInput = ({ value, name, checkHandler }) => {
+export const FileInput = ({ value, name, checkHandler, type }) => {
 	const [file, setFile] = useState();
 	const [isValue, setIsValue] = useState(false);
 
@@ -17,24 +18,20 @@ export const FileInput = ({ value, name, checkHandler }) => {
 		<>
 			{!isValue && (
 				<label className="modal__label">
+					<span>Выберите файл или перетащите файл на карточку</span>
 					<input
 						type="file"
 						className="modal__input"
-						rows={2}
 						placeholder="Добавьте файл"
 						name={name}
 						onChange={(e) => {
-							console.log(e.target.files);
 							checkHandler(name, e.target.files[0]);
 							setIsValue(!isValue);
 						}}
 					/>
 				</label>
 			)}
-			{isValue && <img src={file} alt="" />}
+			{isValue && <FileElem file={file} type={type} />}
 		</>
 	);
-	// } else {
-	// 	return <img src={file} alt="" />;
-	// }
 };

@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useContext } from "react";
 import Button from "../components/Button";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
-import { useSelector } from "react-redux";
+import { Context } from "../..";
 
 export const LoginPage = () => {
-	const { app, auth } = useSelector((state) => state.firebase);
+	const { auth } = useContext(Context);
 	const [signInWithGoogle] = useSignInWithGoogle(auth);
 
 	return (

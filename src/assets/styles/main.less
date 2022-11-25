@@ -2,17 +2,20 @@
 @import "utils/reset";
 @import "utils/vars";
 @import "blocks/todo";
-@import "utils/dark-theme";
-@import "./blocks/login.less";
+@import "blocks/login.less";
 @import "blocks/background";
-@import "./blocks/modal.less";
-@import "./blocks/card.less";
+@import "blocks/modal.less";
+@import "blocks/card.less";
+
+* {
+	font-family: @mainFont;
+}
 
 body {
 	width: 100%;
 	min-width: @phoneWidth;
 	height: 100vh;
-	font-family: @mainFont;
+	
 }
 
 #app {

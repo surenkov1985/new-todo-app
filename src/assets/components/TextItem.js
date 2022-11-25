@@ -3,19 +3,19 @@ import { AiFillEdit } from "react-icons/ai";
 
 export const TextInput = ({ title, name, keyHandler, text }) => {
 	const [val, setVal] = useState();
+	const [titleVal, setTitleVal] = useState()
 	const [isValue, setIsValue] = useState(false);
 	const textRef = useRef(null);
-
-	console.log(isValue);
 
 	useEffect(() => {
 		if (text) {
 			setVal(text);
 			setIsValue(true);
-		} else if (!text && title) {
-			setVal(title);
+		} 
+		if (title) {
+			setTitleVal(title);
 			setIsValue(true);
-		}
+		} 
 	}, [title, text]);
 
 	useEffect(() => {
@@ -27,41 +27,31 @@ export const TextInput = ({ title, name, keyHandler, text }) => {
 	return (
 		<label className="modal__label">
 			{isValue ? (
-				<div className="modal__title-control">
+				<>
 					{title && (
-						<>
-							<h2 className="modal__title">{val}</h2>
+						<div className="modal__title-control">
+							<h2 className="modal__title">{titleVal}</h2>
 							<button
 								className="modal__title-btn"
 								onClick={() => {
-									// setVal(val);
 									setIsValue(!isValue);
 								}}
 							>
 								<AiFillEdit color="#97969B" size={20} />
 							</button>
-						</>
+						</div>
 					)}
 					{text && (
-						<>
+						<div className="modal__title-control">
 							<p className="modal__text">{val}</p>
-							<button
-								className="modal__title-btn"
-								onClick={() => {
-									// setVal(val);
-									setIsValue(!isValue);
-								}}
-							>
-								<AiFillEdit color="#97969B" size={20} />
-							</button>
-						</>
+							
+						</div>
 					)}
-				</div>
+				</>
 			) : (
 				<div className="modal__title-control">
 					<textarea
 						className="modal__input"
-						// rows={2}
 						placeholder="Добавьте название..."
 						name={name}
 						value={val}

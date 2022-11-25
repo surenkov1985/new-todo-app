@@ -16,7 +16,7 @@
         max-height: 90%;
         overflow-y: auto;
         max-width: 500px;
-        background: #ffffff;
+        background: @BgColor;
         border-radius: 5px;
         position: relative;
     }
@@ -43,6 +43,44 @@
     &__title-control {
         display: flex;
         column-gap: 10px;
+        position: relative;
+    }
+
+    &__select {
+        position: absolute;
+        top: 110%;
+        left: 0;
+        width: 30%;
+        background: @BgColor;
+        border: 1px solid @InputColor;
+        border-radius: 5px;
+        display: none;
+        flex-direction: column;
+        row-gap: 5px;
+        z-index: 100;
+
+        &.active {
+            display: flex;
+        }
+    }
+
+    &__state-btn {
+        padding: 0;
+        cursor: pointer;
+        color: @InputColor;
+        
+        &:hover {
+            text-decoration: underline;
+        }
+    }
+
+    &__option {
+        padding: 5px;
+        cursor: pointer;
+
+        &:hover {
+            background: @InputColor;
+        }
     }
 
     &__title-btn {
@@ -82,11 +120,38 @@
     } 
     
     &__input {
-        border: 1px solid #000;
-        border-radius: 5px;
-        padding: 5px;
         width: 100%;
-        font-size: 14px;
+		font-size: @mainFontSize;
+		color: @InputColor;
+		padding: 5px;
+		font-family: @mainFont;
+		font-weight: @regularWeight;
+		border: 1px solid @InputColor;
+		border-radius: 5px;
+
+		@media (max-width: 500px) {
+			padding: 0 15px;
+		}
+		@media (max-width: 460px) {
+			font-size: 14px;
+			padding: 0 5px;
+		}
+
+		&:focus::-webkit-input-placeholder {
+			color: transparent;
+		}
+
+		&:focus::-moz-placeholder          {
+			color: transparent;
+		}
+
+		&:focus:-moz-placeholder           {
+			color: transparent;
+		}
+
+		&:focus:-ms-input-placeholder      {
+			color: transparent;
+		}
     }
 
     &__btn {
@@ -95,7 +160,7 @@
 		align-items: center;
 		justify-content: center;
 		cursor: pointer;
-		background: #97969B;
+		background: @InputColor;
 		border-radius: 5px;
 		column-gap: 10px;
 
@@ -140,4 +205,33 @@
 			}
 		}
 	}
+
+    &__time {
+        padding: 5px;
+        font-size: 16px;
+        background: @ButtonColor;
+        border-radius: 10px;
+
+        &.over {
+            background: rgba(@ErrorColor, 0.1);
+            color: @ErrorColor;
+        }
+    }
+
+    &__error {
+        position: absolute;
+        background: #ffeb92;
+        border: 2px solid @ErrorColor;
+        border-radius: 5px;
+        min-width: 300px;
+        color: @ErrorColor;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 40px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        z-index: 100;
+        text-align: center;
+    }
 }
