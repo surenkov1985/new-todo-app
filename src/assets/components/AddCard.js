@@ -4,15 +4,24 @@ import { getDatabase, ref, push, set, update, remove, onValue } from "firebase/d
 import uniqid from "uniqid";
 import { TextInput } from "./TextItem";
 import { FileInput } from "./FileItem";
-import { DateInput} from "./DateInput";
+import { DateInput } from "./DateInput";
 import { SelectBlock } from "./SelectBlock";
 import { ClickItem } from "./CheckItem";
 import { InputBlock } from "./InputItem";
 import { ListCreate } from "./ListCreate";
 import { Context } from "../..";
 
+/**
+ * Компонент React, модальное окно. Добавляет, редактирует название, описание, добавляемый файл, время, статус, чек-лист
+ *
+ * @component
+ * @param {object} obj объект, запись из базы данных
+ * @param {void} closeModal функция закрывающая модальное окно
+ * @param {string[]} список статусов карточки
+ */
+
 export const AddCard = ({ obj, closeModal, states }) => {
-	const { app } = useContext(Context)
+	const { app } = useContext(Context);
 
 	const database = getDatabase(app);
 	const todosList = ref(database, "todos/" + obj[0]);
@@ -20,13 +29,23 @@ export const AddCard = ({ obj, closeModal, states }) => {
 	const [todo, setTodo] = useState();
 	const [pushData, setPushData] = useState(null);
 	const [error, setError] = useState("");
-	const [isCreate, setIsCreate] = useState(false)
+	const [isCreate, setIsCreate] = useState(false);
+
+	/**
+	 * Прослушивание изменений в базе данных
+	 */
 
 	useEffect(() => {
 		onValue(todosList, (snapshot) => {
 			setTodo(snapshot.val());
 		});
 	}, []);
+
+	/**
+	 * Добавляет новую запись в чек-лист в базу данных firebase
+	 *
+	 * @param {string} value значение ввода в input
+	 */
 
 	const pushList = (value) => {
 		let pushData = { id: uniqid(), checked: false, completed: "", text: value };
@@ -37,15 +56,34 @@ export const AddCard = ({ obj, closeModal, states }) => {
 		});
 	};
 
-	const checkedList = (e, id, checked) => {
+	/**
+	 * Обновление состояние элемента списка в базе данных
+	 *
+	 * @param {string} id идентификатор элемента списка
+	 * @param {boolean} checked состояне элемента списка
+	 */
+	const checkedList = (id, checked) => {
 		update(ref(database, `todos/${obj[0]}/list/` + id), {
 			...{ checked: !checked },
 		});
 	};
 
+	/**
+	 * Удаление елемента чек-листа из базы данных
+	 *
+	 * @param {string} id идентификатор элемента списка
+	 */
+
 	const removeList = (id) => {
 		remove(ref(database, `todos/${obj[0]}/list/` + id));
 	};
+
+	/**
+	 * Преобразование загружаемого файла в url или текст в зависимости от типа
+	 *
+	 * @param {any} file Загружаемый файл
+	 * @returns Объект с типом файла и преобразованным файлом для добавления в базу данных
+	 */
 
 	const fileRead = (file) => {
 		let type = file.type;
@@ -78,6 +116,12 @@ export const AddCard = ({ obj, closeModal, states }) => {
 		};
 	};
 
+	/**
+	 * Формирование объекта для обновления базы данных
+	 * @param {string} name имя свойства
+	 * @param {string} value значение
+	 */
+
 	const pushTodo = (name, value) => {
 		let pushData = {};
 		if (name === "file") {
@@ -87,6 +131,10 @@ export const AddCard = ({ obj, closeModal, states }) => {
 			setPushData(pushData);
 		}
 	};
+
+	/**
+	 * Обновление данных в базе данных
+	 */
 
 	useEffect(() => {
 		if (pushData) {

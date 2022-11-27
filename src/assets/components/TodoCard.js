@@ -6,8 +6,25 @@ import { FileElem } from "./FileElem";
 import { useDispatch } from "react-redux";
 import { dragTodo } from "../stores/todoReduser";
 
+/**
+ * Компонент React, todo карточка, отображаемая в колонке
+ * 
+ * @component
+ * @param {object} data данные из базы данных
+ * @param {void} deleteCard функция, удаляет карточку из БД
+ * @param {void} cardClick функция октрывающая модальное окно для редактирования карточки
+ * @param {string} id идентификатор карточки
+ */
+
 export const TodoCard = ({ data, deleteCard, cardClick, id }) => {
 	const dispatch = useDispatch();
+
+	/**
+	 * Начало перемещения карточки между колонками, запись в redux данных перемещаемой карточки
+	 *
+	 * @param {object} data данные карточки
+	 * @param {string} id идентификатор карточки
+	 */
 
 	const dragStartHandler = (data, id) => {
 		dispatch(dragTodo({ data, id }));

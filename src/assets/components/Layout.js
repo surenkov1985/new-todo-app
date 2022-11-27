@@ -4,6 +4,13 @@ import { useAuthState } from "react-firebase-hooks/auth";
 import { Header } from "./Header";
 import { Context } from "../..";
 
+/**
+ * Индексный компонент, проверяет авторизован ли пользователь, преренаправляет на страницы авторизации/записей todo
+ *
+ * @component
+ *
+ */
+
 export const Layout = () => {
 	const { auth } = useContext(Context);
 	const navigate = useNavigate();

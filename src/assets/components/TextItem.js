@@ -1,6 +1,16 @@
 import React, { useEffect, useRef, useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 
+/**
+ * Компонент React, изменение названия карточки или добавление/редактирование описания катрочки
+ * 
+ * @component
+ * @param {string} title название карточки или пункта карточки 
+ * @param {string} name поле name textarea
+ * @param {void} keyHandler функция добавляющая/редактирующая данные в БД
+ * @param {string} text текст раздела "описание"
+ */
+
 export const TextInput = ({ title, name, keyHandler, text }) => {
 	const [val, setVal] = useState();
 	const [titleVal, setTitleVal] = useState()

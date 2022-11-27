@@ -3,6 +3,12 @@ import Button from "../components/Button";
 import { useSignInWithGoogle } from "react-firebase-hooks/auth";
 import { Context } from "../..";
 
+/**
+ * страница авторизации
+ * 
+ * @component
+ */
+
 export const LoginPage = () => {
 	const { auth } = useContext(Context);
 	const [signInWithGoogle] = useSignInWithGoogle(auth);

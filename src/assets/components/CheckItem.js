@@ -2,8 +2,18 @@ import React from "react";
 import { BsCheck } from "react-icons/bs";
 import { GrClose } from "react-icons/gr";
 
-export const ClickItem = ({checked, checkHandler, text, removeHandler, id}) => {
+/**
+ * Компонент React, записть в чек листе
+ * 
+ * @component
+ * @param {boolean} checked статус записи(выполнена/не выполнена)
+ * @param {void} checkHandler обработчик события клика, изменяет статус записи
+ * @param {string} text текст записи
+ * @param {void} removeHandler функция удаления записи из базы данных
+ * @param {string} id идентификатор записи
+ */
 
+export const ClickItem = ({checked, checkHandler, text, removeHandler, id}) => {
 
     return (
 		<div className="modal__list">

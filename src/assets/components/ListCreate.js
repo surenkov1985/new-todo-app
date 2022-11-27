@@ -2,6 +2,12 @@ import React, { useState } from "react";
 import { AiOutlinePlus } from "react-icons/ai";
 import { GrClose } from "react-icons/gr";
 
+/**
+ * Компонент React, добавляет записи в чек-лист
+ * @param {void} pushListHandler функция добавляющая запись в БД
+ * @param {void} listCreate функция выключающая компонент
+ */
+
 export const ListCreate = ({ pushListHandler, listCreate }) => {
 	const [val, setVal] = useState("");
 

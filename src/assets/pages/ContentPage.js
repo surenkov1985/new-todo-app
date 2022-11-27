@@ -1,10 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
-import Create from "../components/Create";
+import {Create} from "../components/Create";
 import { getDatabase, ref, set, onValue, push, remove, update } from "firebase/database";
 import { useSelector } from "react-redux";
 import { AddCard } from "../components/AddCard";
 import { TodoCard } from "../components/TodoCard";
 import { Context } from "../..";
+
+/**
+ * Страница с задачами
+ * 
+ * @component
+ */
 
 export const ContentPage = () => {
 	const { app } = useContext(Context);
@@ -18,12 +24,23 @@ export const ContentPage = () => {
 	const [todos, setTodos] = useState();
 	const [states, setStates] = useState();
 
+	/**
+	 * Прослушивание изменений в БД
+	 * Получение данных о карточках, статусах(колонках)
+	 */
+
 	useEffect(() => {
 		onValue(todosList, (snapshot) => {
 			setTodos(Object.entries(snapshot.val().todos));
 			setStates(Object.entries(snapshot.val().states));
 		});
 	}, []);
+
+	/**
+	 * Добавление карточки
+	 * @param {object} data обьект названия создаваемой карточки(ключ, значение)
+	 * @param {string} state статус карточки(по умолчанию "Новые")
+	 */
 
 	const setCard = (data, state) => {
 		const todosList = ref(database, "todos");
@@ -33,6 +50,13 @@ export const ContentPage = () => {
 		});
 	};
 
+	/**
+	 * Изменение статуса карточки при перемещении drag'n'drop между колонками, обновление статуса в БД
+	 *
+	 * @param {React.BaseSyntheticEvent} e
+	 * @param {string} state статус карточки
+	 */
+
 	const dropHandler = (e, state) => {
 		e.preventDefault();
 
@@ -40,6 +64,11 @@ export const ContentPage = () => {
 			...{ state: state },
 		});
 	};
+
+	/**
+	 * Добавление колонки
+	 * @param {object} data обьект с данными нового статуса
+	 */
 
 	const setState = (data) => {
 		const statesList = ref(database, "states");
@@ -49,19 +78,39 @@ export const ContentPage = () => {
 		});
 	};
 
+	/**
+	 * Удаление карточки
+	 * @param {React.BaseSyntheticEvent} e
+	 * @param {string} key идентификатор карточки
+	 */
+
 	const deleteCard = (e, key) => {
 		e.preventDefault();
 		e.stopPropagation();
 		remove(ref(database, "todos/" + key));
 	};
 
+	/**
+	 * Функция закрытия модального окна
+	 */
+
 	const closeModal = () => {
 		setModalActive(false);
 		setObj(null);
 	};
+
+	/**
+	 * Функция открытия модального окна
+	 */
 	const modalOpen = () => {
 		setModalActive(true);
 	};
+
+	/**
+	 * вфбор карточки для редактирования, открытие модального окна
+	 * 
+	 * @param {object} data данные карточки
+	 */
 
 	const cardClickHandler = (data) => {
 		setObj(data);

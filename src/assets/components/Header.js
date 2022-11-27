@@ -3,6 +3,12 @@ import Button from "./Button";
 import { useAuthState, useSignOut } from "react-firebase-hooks/auth";
 import { Context } from "../..";
 
+/**
+ * Компонент React, header. Проверяет авторизван ли пользователь, выводит кновку "войти"/"выйти"
+ * 
+ * @component
+ */
+
 export const Header = () => {
 	const {auth} = useContext(Context)
 	const [signOut] = useSignOut(auth);

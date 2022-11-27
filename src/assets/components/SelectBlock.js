@@ -1,6 +1,15 @@
 import classNames from "classnames";
 import React, { useState } from "react";
 
+/**
+ * Компонент React, отображает список статусов(колонок), изменяет статус карточки(расположение в колонке)
+ * 
+ * @component
+ * @param {string} state статус карточки
+ * @param {string[]} states список статусов(колонок) 
+ * @param {void} clickHandler функция, выбор статуса(колонки)
+ */
+
 export const SelectBlock = ({state, states , clickHandler}) => {
 
     const [stateClass, setStateClass] = useState("");

@@ -3,6 +3,15 @@ import React, { useState } from "react";
 import { AiFillEdit } from "react-icons/ai";
 import { DateString } from "./DateString";
 
+/**
+ * Компонент React, используется в модальном окне для установки срока выполнения задачи
+ *
+ * @component
+ * @param {number} timestamp время в миллисекундах до окончания срока выполнения задачи(передается из базы данных)
+ * @param {void} clickHandler функция для установки или редактирования срока выполнения задачи
+ * @param {string} title оглавление пункта в модальном окне
+ */
+
 export const DateInput = ({ timestamp, clickHandler, title }) => {
 	const [inputTime, setInputTime] = useState();
 	const [isTimeEdit, setIstimeEdit] = useState(false);

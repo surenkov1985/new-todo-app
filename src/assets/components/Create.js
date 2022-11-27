@@ -2,11 +2,26 @@ import React, { useState } from "react";
 import { HiPlus } from "react-icons/hi";
 import { useForm } from "react-hook-form";
 
-export default function Create({ createText, createHandler, name, state }) {
+/**
+ * Компонент React, используется для передачи данных для создания новой карточки или колонки в базе данных
+ *
+ * @component
+ * @param {string} createText текст кнопки
+ * @param {void} createHandler функция добавляющая новую запись в базу данных
+ * @param {string} name имя инпута
+ * @param {string} [state] название колонки(статус задачи)
+ */
+
+export const Create = ({ createText, createHandler, name, state }) => {
 	const [isCreateCard, setIsCreateCard] = useState(false);
 	const [val, setVal] = useState("");
 	const { handleSubmit, register, setValue } = useForm({ mode: "all" });
 
+	/**
+	 * Обработка события нажатия клавиши Enter в инпуте
+	 * @param {React.BaseSyntheticEvent} e
+	 *
+	 */
 
 	function onKeyPress(e) {
 		if (e.key === "Enter" && val) {
@@ -18,10 +33,15 @@ export default function Create({ createText, createHandler, name, state }) {
 			return handleSubmit(formSubmit(data));
 		}
 	}
+
+	/**
+	 * Отправка данных из формы
+	 *
+	 */
 	const formSubmit = (data) => {
 		setIsCreateCard(false);
 		setVal("");
-		createHandler(data, state)
+		createHandler(data, state);
 	};
 
 	return (
@@ -60,7 +80,7 @@ export default function Create({ createText, createHandler, name, state }) {
 						<button
 							className="todo__form-btn"
 							onClick={(e) => {
-								e.preventDefault()
+								e.preventDefault();
 								setIsCreateCard(false);
 							}}
 						>
@@ -71,12 +91,4 @@ export default function Create({ createText, createHandler, name, state }) {
 			</div>
 		</form>
 	);
-}
-{
-	/* <input type="checkbox" className="todo__check" checked={checked} onChange={onCheck}/> */
-}
-{
-	/* <div className="todo__false-check">
-					<svg xmlns="http://www.w3.org/2000/svg" width="11" height="9"><path fill="none" stroke="#FFF" strokeWidth="2" d="M1 4.304L3.696 7l6-6"/></svg>
-				</div> */
 }

@@ -1,6 +1,17 @@
 import React, { useState } from "react";
 import { AiFillEdit, AiOutlinePlus } from "react-icons/ai";
 
+/**
+ * Компонент React, добавляет/редактирует название чек-листа
+ *
+ * @component
+ * @param {string} value название чек-листа если оно было добавлено
+ * @param {string} name поле name инпута
+ * @param {string} defaultValue дефолтное название чек-листа
+ * @param {void} pushHandler функция, добавляющая/меняющее название чек-листа в БД
+ * @param {void} listCreate функция включающая компонент для добавления записей чек-листа
+ */
+
 export const InputBlock = ({ value, name, defaultValue, pushHandler, listCreate }) => {
 	const [isValue, setIsValue] = useState(false);
 	const [val, setVal] = useState(value ? value : defaultValue);
@@ -11,7 +22,12 @@ export const InputBlock = ({ value, name, defaultValue, pushHandler, listCreate 
 				<div className="modal__title-control">
 					<h2 className="modal__title">{value}</h2>
 
-					<button className="modal__title-btn" onClick={(e) => {setIsValue(!isValue)}}>
+					<button
+						className="modal__title-btn"
+						onClick={(e) => {
+							setIsValue(!isValue);
+						}}
+					>
 						<AiFillEdit color="#97969B" size={20} />
 					</button>
 					<button
