@@ -1,6 +1,7 @@
 # Тестовое задание на вакансию Front-end-разработчик (junior) в компанию WomanUP
 
 [Демо](https://to-do-test-project.web.app/)
+[GitLab](https://gitlab.com/surenkov1985/new-todo-app)
 
 ## Подробности задания:
 
